@@ -38,6 +38,56 @@ router.post("/insertcustomer",function(request,response){
 	})
 })
 
+router.put("/editcustomer/:id",function(request,response){
+
+	var userId = request.params.id;
+	var dataFromPostMan = request.body;
+	//var newObj = {};
+	console.log(userId)
+		Customer.getCustomersById(userId,function(err,dataFromDB){
+				 if(err){
+		              throw err;
+				  }
+				  
+				var bodyObj = {
+					name : dataFromPostMan.name || dataFromDB.name,
+					email : dataFromPostMan.email || dataFromDB.email,
+					mobile : dataFromPostMan.mobile || dataFromDB.mobile
+				}
+				Customer.editCustomer(userId,bodyObj,function(err,data){
+                  if(err){
+		              throw err;
+				  }
+				  response.json(data);
+	})
+		});
+
+
+	
+
+})
+
+router.delete("/deletecustomer/:id",function(request,response){
+	var userId = request.params.id;
+
+	Customer.deleteCustomer(userId,function(err,data){
+         if(err){
+		              throw err;
+				  }
+				  response.json(data);
+	})
+})
+
+
+router.get("/customersbyid/:id",function(request,response){
+var userId = request.params.id;
+Customer.getCustomersById(userId,function(err,customerData){
+		 if(err){
+              throw err;
+		  }
+		  response.json(customerData);
+})
+})
 app.use("/api",router);
 
 var PORT = process.env.PORT || 4001;
